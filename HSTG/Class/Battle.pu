@@ -1,0 +1,43 @@
+@startuml
+
+package GameManager {
+
+}
+
+package Common {
+    ' 兵種
+    enum WeaponryType {
+        Infantry
+        Bowman
+        Cavalry
+    }
+
+    enum AptitudeType {
+        A
+        B
+        C
+    }
+
+    '小隊
+    class Platoon {
+        + Soldiers : int
+        + Weaponry : WeaponryType
+        + Aptitude : AptitudeType
+    }
+
+    class ArmyCreator {
+    }
+}
+
+package Enemy {
+}
+
+package Ally {
+
+}
+
+package UI{
+
+}
+
+@enduml
