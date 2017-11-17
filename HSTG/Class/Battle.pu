@@ -1,43 +1,80 @@
-@startuml
+@startuml BattleClasses
 
 package GameManager {
+    class GameManager {
+        + Turn : int
+    }
 
+    class WarResult {
+
+    }
 }
 
-package Common {
-    ' 兵種
+package Param {
+    '兵種
     enum WeaponryType {
         Infantry
         Bowman
         Cavalry
     }
 
+    '兵種適正
     enum AptitudeType {
         A
         B
         C
     }
 
+    '所属
+    enum BelongType {
+        Enemy
+        Friend
+    }
+
     '小隊
     class Platoon {
+        + WarPlatoonId : int
+        + Belong : BelongType
         + Soldiers : int
         + Weaponry : WeaponryType
         + Aptitude : AptitudeType
+        + LeaderParam : LeaderParam
+        + Speed : int
+    }
+}
+
+package Calculator {
+    class SpeedCalculator {
+        +{static} SpeedCalculate(this Platoon,WaponryType,Aptitude,LeaderParam) : int
     }
 
-    class ArmyCreator {
+    class DamageCalculator {
+        +{static} DamageCalculate(this Platoon,Platoon) : Damage
+    }
+
+    class Damage {
+        + EnemyPlatoonDamage : int
+        + FriendPlatoonDamage : int
     }
 }
 
-package Enemy {
+package Command {
+    class PlatoonCommand {
+        + Attack()
+        + Defence()
+        + Tecihque()
+        + Escape()
+    }
 }
 
-package Ally {
+package UI {
 
+    class WarInfoView {
+
+    }
+
+    class PlatoonView {
+
+    }
 }
-
-package UI{
-
-}
-
 @enduml
