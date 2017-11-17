@@ -11,13 +11,13 @@ package GameManager {
         - NextPlatoon()
         - NextTurn()
         - PlatoonSpeedCalcurate() : void
+        - ShowResultText()
     }
 
     class NextTurn {
         + CheckBehaviorOrder(List<Platoon>,List<Platoon>) : List<Dictionary<int,Platoon>>
     }
 
-    NextTurn --o GameManager
 }
 
 
@@ -78,8 +78,9 @@ package Calculator {
     }
 
     class Damage {
-        + EnemyPlatoonDamage : int
-        + FriendPlatoonDamage : int
+        + AttackPlatoonId : int
+        + DefencePlatoonId : int
+        + DamageValue : int
     }
 
     GameManager ..> DamageCalculator
@@ -126,7 +127,12 @@ package UI {
 
     }
 
+    PlatoonView --o GameManager
+    WarInfoView --o GameManager
+    CommandView --o GameManager
+    ResultTextView --o GameManager
     PlatoonView ..> ShakeType
-    PlatoonView ..> BattleColor
+    PlatoonView .> BattleColor
+    ResultTextCreator <.. ResultTextView
 }
 @enduml
