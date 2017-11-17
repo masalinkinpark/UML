@@ -1,14 +1,25 @@
 @startuml BattleClasses
 
 package GameManager {
+
     class GameManager {
         + Turn : int
+        + CurrentBehaviorPlatoon : Platoon
+        + Allies : List<Platoon>
+        + Enemies : List<Platoon>
+        + Initialize() : void
+        - NextPlatoon()
+        - NextTurn()
+        - PlatoonSpeedCalcurate() : void
     }
 
-    class WarResult {
-
+    class NextTurn {
+        + CheckBehaviorOrder(List<Platoon>,List<Platoon>) : List<Dictionary<int,Platoon>>
     }
+
+    NextTurn --o GameManager
 }
+
 
 package Param {
     '兵種
@@ -40,7 +51,21 @@ package Param {
         + Aptitude : AptitudeType
         + LeaderParam : LeaderParam
         + Speed : int
+        + PlatoonCommand : void
     }
+
+    class PlatoonCommand {
+        + Attack()
+        + Defence()
+        + Technique()
+        + Escape()
+    }
+
+    GameManager o-- Platoon
+    Platoon o-- WeaponryType
+    Platoon o-- AptitudeType
+    Platoon o-- BelongType
+    Platoon o-- PlatoonCommand
 }
 
 package Calculator {
@@ -56,25 +81,52 @@ package Calculator {
         + EnemyPlatoonDamage : int
         + FriendPlatoonDamage : int
     }
+
+    GameManager ..> DamageCalculator
+    GameManager ..> SpeedCalculator
 }
 
-package Command {
-    class PlatoonCommand {
-        + Attack()
-        + Defence()
-        + Tecihque()
-        + Escape()
+package Common {
+    enum BattleColor {
+        Normal
+        Orange
     }
 }
+
 
 package UI {
 
     class WarInfoView {
-
+        + TurnText
     }
 
     class PlatoonView {
+        + Shake(ShakeType)
+        + SetColor(BattleColor)
+    }
+
+    enum ShakeType {
+        Weak
+        Normal
+        Strong
+    }
+
+    class CommandView {
+        + AttackButton
+        + DefenctButton
+        + Technique
+        + Escape
+    }
+
+    class ResultTextCreator {
+        Create() : string
+    }
+
+    class ResultTextView {
 
     }
+
+    PlatoonView ..> ShakeType
+    PlatoonView ..> BattleColor
 }
 @enduml
