@@ -1,2 +1,24 @@
 @startuml BattleSequence
+title ゲーム初期化から戦闘の流れ
+
+SceneInitialize -> GetParams
+activate GetParams
+
+GetParams -> NextTurn
+activate NextTurn
+deactivate GetParams
+
+NextTurn -> PlatoonSpeedCalcurate : 敵味方の部隊の数
+activate PlatoonSpeedCalcurate
+
+loop 1, 敵、味方の Platoon 分
+    PlatoonSpeedCalcurate -> PlatoonSpeedCalcurate
+end
+
+PlatoonSpeedCalcurate --> NextTurn : 敵味方全体の部隊List(Speed順にソート済み)
+
+NextTurn -> ActivePlatoon
+activate ActivePlatoon
+
+
 @enduml
