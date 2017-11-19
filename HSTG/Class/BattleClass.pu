@@ -8,16 +8,12 @@ package GameManager {
         + Allies : List<Platoon>
         + Enemies : List<Platoon>
         + Initialize() : void
-        - NextPlatoon()
-        - NextTurn()
+        - GetParam()
+        - CheckSpeed(Platoon)
         - PlatoonSpeedCalcurate() : void
+        - OnChangedSituation()
         - ShowResultText()
     }
-
-    class NextTurn {
-        + CheckBehaviorOrder(List<Platoon>,List<Platoon>) : List<Dictionary<int,Platoon>>
-    }
-
 }
 
 
@@ -69,7 +65,7 @@ package Param {
 }
 
 package Calculator {
-    class SpeedCalculator {
+    class PlatoonSpeedCalculator {
         +{static} SpeedCalculate(this Platoon,WaponryType,Aptitude,LeaderParam) : int
     }
 
@@ -84,7 +80,7 @@ package Calculator {
     }
 
     GameManager ..> DamageCalculator
-    GameManager ..> SpeedCalculator
+    GameManager ..> PlatoonSpeedCalculator
 }
 
 package Common {

@@ -1,24 +1,51 @@
 @startuml BattleSequence
 title ゲーム初期化から戦闘の流れ
 
+activate SceneInitialize
 SceneInitialize -> GetParams
 activate GetParams
-
-GetParams -> NextTurn
-activate NextTurn
+GetParams --> SceneInitialize
 deactivate GetParams
+SceneInitialize -> BattleLoop
+deactivate SceneInitialize
 
-NextTurn -> PlatoonSpeedCalcurate : 敵味方の部隊の数
+activate BattleLoop
+activate CheckSpeed
+BattleLoop -> CheckSpeed
 activate PlatoonSpeedCalcurate
+CheckSpeed -> PlatoonSpeedCalcurate : 敵味方の部隊の数
 
 loop 1, 敵、味方の Platoon 分
     PlatoonSpeedCalcurate -> PlatoonSpeedCalcurate
 end
 
-PlatoonSpeedCalcurate --> NextTurn : 敵味方全体の部隊List(Speed順にソート済み)
+PlatoonSpeedCalcurate --> CheckSpeed : 敵味方全体の部隊List(Speed順にソート済み)
+deactivate PlatoonSpeedCalcurate
 
-NextTurn -> ActivePlatoon
-activate ActivePlatoon
+CheckSpeed --> BattleLoop
+deactivate CheckSpeed
 
+loop 1, 敵、味方の Platoon 数
+    activate ActivatePlatoon
+    BattleLoop -> ActivatePlatoon
+    activate PlatoonCommand
+    ActivatePlatoon -> PlatoonCommand
+    PlatoonCommand --> ActivatePlatoon : return CommandResult
+    deactivate PlatoonCommand
 
+    activate OnChangedSituation
+    ActivatePlatoon -> OnChangedSituation
+    deactivate ActivatePlatoon
+
+    OnChangedSituation --> BattleLoop
+    deactivate OnChangedSituation
+end
+
+alt 敵、味方の部隊が全滅している
+    BattleLoop -> BattleLoop :End
+else どちらも全滅していない:w
+    BattleLoop -> BattleLoop : もう一度 BattleLoop を回す
+end
+
+deactivate BattleLoop
 @enduml
