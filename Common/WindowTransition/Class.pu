@@ -1,0 +1,140 @@
+
+@startuml WindowTransition
+package WindowTransitionManager {
+    class Test<<static>> {
+
+    }
+}
+/'
+package GameManager {
+
+    class GameManager {
+        + Turn : int
+        + CurrentBehaviorPlatoon : Platoon
+        + Allies : List<Platoon>
+        + Enemies : List<Platoon>
+        + Initialize() : void
+        - GetParam()
+        - CheckSpeed(Platoon)
+        - PlatoonSpeedCalcurate() : void
+        - OnChangedSituation()
+        - ShowResultText()
+    }
+}
+
+package Param {
+    '兵種
+    enum WeaponryType {
+        Infantry
+        Bowman
+        Cavalry
+    }
+
+    '兵種適正
+    enum AptitudeType {
+        A
+        B
+        C
+    }
+
+    '所属
+    enum BelongType {
+        Enemy
+        Friend
+    }
+
+    '小隊
+    class Platoon {
+        + WarPlatoonId : int
+        + Belong : BelongType
+        + Soldiers : int
+        + Weaponry : WeaponryType
+        + Aptitude : AptitudeType
+        + LeaderParam : LeaderParam
+        + Speed : int
+        + PlatoonCommand : void
+    }
+
+    class PlatoonCommand {
+        + Attack()
+        + Defence()
+        + Technique()
+        + Escape()
+    }
+
+    GameManager o-- Platoon
+    Platoon o-- WeaponryType
+    Platoon o-- AptitudeType
+    Platoon o-- BelongType
+    Platoon o-- PlatoonCommand
+}
+
+package Calculator {
+    class PlatoonSpeedCalculator {
+        +{static} SpeedCalculate(this Platoon,WaponryType,Aptitude,LeaderParam) : int
+    }
+
+    class DamageCalculator {
+        +{static} DamageCalculate(this Platoon,Platoon) : Damage
+    }
+
+    class Damage {
+        + AttackPlatoonId : int
+        + DefencePlatoonId : int
+        + DamageValue : int
+    }
+
+    GameManager ..> DamageCalculator
+    GameManager ..> PlatoonSpeedCalculator
+}
+
+package Common {
+    enum BattleColor {
+        Normal
+        Orange
+    }
+}
+
+
+package UI {
+
+    class WarInfoView {
+        + TurnText
+    }
+
+    class PlatoonView {
+        + Shake(ShakeType)
+        + SetColor(BattleColor)
+    }
+
+    enum ShakeType {
+        Weak
+        Normal
+        Strong
+    }
+
+    class CommandView {
+        + AttackButton
+        + DefenctButton
+        + Technique
+        + Escape
+    }
+
+    class ResultTextCreator {
+        Create() : string
+    }
+
+    class ResultTextView {
+
+    }
+
+    PlatoonView --o GameManager
+    WarInfoView --o GameManager
+    CommandView --o GameManager
+    ResultTextView --o GameManager
+    PlatoonView ..> ShakeType
+    PlatoonView .> BattleColor
+    ResultTextCreator <.. ResultTextView
+}
+'/
+@enduml
