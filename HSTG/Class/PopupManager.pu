@@ -1,0 +1,86 @@
+@startuml{PopupManager}
+title PopupManager class
+
+enum PopupType {
+    CommonPopup,
+    OtherPopup,
+}
+
+class PopupManager <<SingletonMonoBehaviour>> {
+    - Stack<IPopupHandler>
+    - Queue<IPopupHandler>
+    + void Initialize()
+    + void Show<TParam>(PopupType,TParam,onCompleted)
+    + void Hide(onCompleted)
+}
+note left of PopupManager
+    Show のときに PopupType を渡しているが、
+    まぁ Instantiate したい Prefab が
+    渡っていればなんでもよい。Show のときに指定された
+    Prefab を Instantiate して、
+    GetComponent<IPopupHandler>()で取得して、
+    それを使い回す
+end note
+
+note bottom of PopupManager
+    IPopupHandler を Stack でもって置いたり、Queue でもって置いたり
+    仕様次第で実装を変えたりする
+    Stack や Queue で持っておくと、PopupManager の Show() か Hide() を
+    呼んだときに、すでに開かれている Popup を自動で閉じたりなどもできる
+end note
+
+PopupManager - PopupType
+PopupManager .up.> IPopupInitializer
+PopupManager .up.> IPopupHandler
+
+package CommonPopupPrefab {
+    class CommonPopup<CommonPopupParam> {
+    }
+
+    class CommonPopupParam {
+    }
+
+    CommonPopup -up- CommonPopupParam
+}
+
+package OtherPopupPrefab {
+
+    class OtherPopup<OtherPopupParam> {
+    }
+
+    class OtherPopupParam {
+    }
+    OtherPopup -up- OtherPopupParam
+}
+
+
+abstract class PopupBase<TParam> {
+    + IPopupInitializer<TParam> Initializer
+    + void Show(Action onCompleted)
+    + void Hide(Action onCompleted)
+}
+
+note right of PopupBase
+    本音は PopupBase<TParam> で使いたいが、
+    Unity の仕様上 クラスにジェネリックがついてしまうと
+    Serialize できない
+    -> Prefab に紐付けることができない
+end note
+
+CommonPopup --|> PopupBase
+OtherPopup --|> PopupBase
+
+PopupBase ..|> IPopupInitializer
+PopupBase ..|> IPopupHandler
+
+interface IPopupInitializer<TParam> {
+    void Initialize(TParam param)
+}
+
+interface IPopupHandler {
+    GameObject GetSelfGameObject()
+    void Show(Action onCompleted)
+    void Hide(Action onCompleted)
+}
+
+@enduml
